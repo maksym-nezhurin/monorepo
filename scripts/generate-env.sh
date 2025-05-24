@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-ENV_TEMPLATE="./config/env/.env.template"
+ENV_TEMPLATE="../config/env/.env.template"
 
 if [ ! -f "$ENV_TEMPLATE" ]; then
   echo "❌ Не знайдено шаблон .env: $ENV_TEMPLATE"

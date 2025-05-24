@@ -1,0 +1,32 @@
+# Ignore all app and service submodules
+apps/client/
+apps/admin/
+services/auth/
+services/user/
+services/notification/
+services/gateway/
+infrastructure/keycloak/
+
+# Локальні середовища
+.env
+**/.env
+
+# Docker дев-файли
+Dockerfile.dev
+**/Dockerfile.dev
+
+# node_modules та IDE
+**/node_modules
+.DS_Store
+.idea
+.vscode
+
+# Клоновані сабрепозиторії
+apps/*
+services/*
+infrastructure/*
+
+# Але зберегти порожні папки (опційно)
+!apps/.gitkeep
+!services/.gitkeep
+!infrastructure/.gitkeep

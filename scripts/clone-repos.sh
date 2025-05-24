@@ -1,23 +1,23 @@
 #!/bin/bash
-set -e
+echo "🌀 Клонування репозиторіїв..."
+set -ex
 
-GITHUB_BASE_URL="git@github.com:maksym-nezhurin"
-
-declare -A REPOS=(
-  [apps/client]="$GITHUB_BASE_URL/client-app.git"
-  [apps/admin]="$GITHUB_BASE_URL/admin.git"
-  [services/auth]="$GITHUB_BASE_URL/auth-service.git"
-  [services/user]="$GITHUB_BASE_URL/user-service.git"
-  [services/notification]="$GITHUB_BASE_URL/notification-service.git"
-  [services/gateway]="$GITHUB_BASE_URL/gateway.git"
-  [infrastructure/keycloak]="$GITHUB_BASE_URL/keycloak.git"
+REPOS=(
+  "apps/client|git@github.com:maksym-nezhurin/client-app.git"
+  "apps/admin|git@github.com:maksym-nezhurin/admin.git"
+  "services/auth|git@github.com:maksym-nezhurin/auth-service.git"
+  "services/user|git@github.com:maksym-nezhurin/user-service.git"
+  "services/notification|git@github.com:maksym-nezhurin/notification-service.git"
+  "services/gateway|git@github.com:maksym-nezhurin/gateway.git"
+  "infrastructure/keycloak|git@github.com:maksym-nezhurin/keycloak.git"
 )
 
-echo "🌀 Клонування репозиторіїв..."
-for dir in "${!REPOS[@]}"; do
+for entry in "${REPOS[@]}"; do
+  dir="${entry%%|*}"
+  url="${entry##*|}"
   if [ ! -d "$dir" ]; then
-    echo "📦 Клоную ${REPOS[$dir]} → $dir"
-    git clone "${REPOS[$dir]}" "$dir"
+    echo "📦 Клоную $url → $dir"
+    git clone "$url" "$dir"
   else
     echo "✅ $dir вже існує, пропускаю"
   fi

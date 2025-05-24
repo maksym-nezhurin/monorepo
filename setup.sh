@@ -2,7 +2,7 @@
 set -e
 
 echo "=== Запуск клонування репозиторіїв ==="
-./scripts/clone-repos.sh
+./clone-repos.sh
 
 echo "=== Генерація .env файлів ==="
 ./scripts/generate-env.sh
