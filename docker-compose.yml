@@ -1,95 +1,113 @@
-version: '3.9'
+# version: '3.9'
 
 services:
-  keycloak:
-    build: ./infrastructure/keycloak
+  postgres:
+    image: postgres:15
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - myapp-network
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./infrastructure/keycloak/realm-export.json:/opt/keycloak/realm-export.json
-    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--import-realm"]
-    networks:
-      - myapp-network
-
-  auth-service:
-    build: ./services/auth
-    env_file:
-      - ./services/auth/.env
-    depends_on:
-      - keycloak
-    ports:
-      - "3001:3001"
-    networks:
-      - myapp-network
-
-  user-service:
-    build: ./services/user
-    env_file:
-      - ./services/user/.env
-    depends_on:
-      - keycloak
-    ports:
-      - "3002:3002"
-    networks:
-      - myapp-network
-
-  notification-service:
-    build: ./services/notification
-    env_file:
-      - ./services/notification/.env
-    depends_on:
-      - keycloak
-    ports:
-      - "3003:3003"
-    networks:
-      - myapp-network
-
-  gateway:
-    build: ./services/gateway
-    env_file:
-      - ./services/gateway/.env
-    ports:
-      - "3000:3000"
-    depends_on:
-      - keycloak
-      - auth-service
-      - user-service
-      - notification-service
-    networks:
-      - myapp-network
-
-  client-app:
-    build:
-      context: ./apps/client
-    ports:
-      - "3004:3000"
+      - ./infrastructure/keycloak/realm-export.json:/opt/keycloak/realm-export.json:ro
+    command: start-dev --import-realm
     environment:
-      - NODE_ENV=production
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: ${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    depends_on:
+      - postgres
     networks:
       - myapp-network
-    depends_on:
-      - gateway
-      - keycloak
 
   admin-panel:
     build:
       context: ./apps/admin
     ports:
-      - "5173:5173"
-    environment:
-      - NODE_ENV=production
+      - "5173:5173" # Проксіруємо 80 порт nginx на 5173 локального хоста
     networks:
       - myapp-network
     depends_on:
-      - gateway
+      # - gateway
       - keycloak
+
+  # auth-service:
+  #   build: ./services/auth
+  #   env_file:
+  #     - ./services/auth/.env
+  #   depends_on:
+  #     - keycloak
+  #   ports:
+  #     - "3001:3001"
+  #   networks:
+  #     - myapp-network
+
+  # user-service:
+  #   build: ./services/user
+  #   env_file:
+  #     - ./services/user/.env
+  #   depends_on:
+  #     - keycloak
+  #   ports:
+  #     - "3002:3002"
+  #   networks:
+  #     - myapp-network
+
+  # notification-service:
+  #   build: ./services/notification
+  #   env_file:
+  #     - ./services/notification/.env
+  #   depends_on:
+  #     - keycloak
+  #   ports:
+  #     - "3003:3003"
+  #   networks:
+  #     - myapp-network
+
+  # gateway:
+  #   build: ./services/gateway
+  #   env_file:
+  #     - ./services/gateway/.env
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - keycloak
+  #     - auth-service
+  #     - user-service
+  #     - notification-service
+  #   networks:
+  #     - myapp-network
+
+  # client-app:
+  #   build:
+  #     context: ./apps/client
+  #   ports:
+  #     - "3004:3000"
+  #   environment:
+  #     - NODE_ENV=production
+  #   networks:
+  #     - myapp-network
+  #   depends_on:
+  #     - gateway
+  #     - keycloak
 
 volumes:
   keycloak_data:
+  postgres-data:
 
 networks:
   myapp-network:

@@ -12,6 +12,8 @@ infrastructure/keycloak/
 **/.env
 
 # Docker дев-файли
+Dockerfile
+**/Dockerfile
 Dockerfile.dev
 **/Dockerfile.dev
 
