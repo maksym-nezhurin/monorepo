@@ -103,14 +103,6 @@ infrastructure/keycloak/realm-export.json
  ### ⚙️ Розробка та продакшн
  </summary>
 
-Keycloak підтримує автоматичний імпорт realm через опцію --import-realm у Docker Compose.
-
-Якщо потрібно імпортувати вручну (наприклад, після старту Keycloak), використайте скрипт:
- ```markdown
-./scripts/import-realm.sh
-```
-Скрипт:
-
 - Для розробки:
 Використовуйте ```docker-compose.override.yml```, де налаштований <b>hot-reload</b> та локальні томи.
 
