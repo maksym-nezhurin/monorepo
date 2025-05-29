@@ -8,6 +8,7 @@ REPOS=(
   "services/auth|git@github.com:maksym-nezhurin/auth-service.git"
   "services/user|git@github.com:maksym-nezhurin/user-service.git"
   "services/notification|git@github.com:maksym-nezhurin/notification-service.git"
+  "services/car|git@github.com:maksym-nezhurin/car-service.git"
   "services/gateway|git@github.com:maksym-nezhurin/gateway.git"
   "infrastructure/keycloak|git@github.com:maksym-nezhurin/keycloak.git"
 )

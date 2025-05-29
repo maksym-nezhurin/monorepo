@@ -11,6 +11,22 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true  # useful for file watching inside Docker on some OS
 
+  car-service:
+    build:
+      context: ./services/car
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - ./services/car:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "3002:3002"
+    networks:
+      - myapp-network
+    depends_on:
+      - postgres
 #   client:
 #     build:
 #       context: ./apps/client
@@ -105,6 +121,6 @@ services:
 #       - user
 #       - notification
 
-# networks:
-#   myapp-network:
-#     external: true
+networks:
+  myapp-network:
+    external: true
